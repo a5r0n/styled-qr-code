@@ -1,6 +1,6 @@
-import qrTypes from '../constants/qrTypes.js';
-import errorCorrectionLevels from '../constants/errorCorrectionLevels.js';
-import { DotType, Options, TypeNumber, ErrorCorrectionLevel, Mode, Gradient } from '../types';
+import qrTypes from '../constants/qrTypes.ts';
+import errorCorrectionLevels from '../constants/errorCorrectionLevels.ts';
+import { DotType, Options, TypeNumber, ErrorCorrectionLevel, Mode, Gradient } from '../types/mod.ts';
 
 export interface RequiredOptions extends Options {
   width: number;

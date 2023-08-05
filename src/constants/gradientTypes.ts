@@ -1,4 +1,4 @@
-import { GradientTypes } from '../types';
+import { GradientTypes } from '../types/mod.ts';
 
 export default {
   radial: 'radial',

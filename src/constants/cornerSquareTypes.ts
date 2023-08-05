@@ -1,4 +1,4 @@
-import { CornerSquareTypes } from '../types';
+import { CornerSquareTypes } from '../types/mod.ts';
 
 export default {
   dot: 'dot',

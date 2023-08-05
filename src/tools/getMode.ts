@@ -1,5 +1,5 @@
-import modes from '../constants/modes.js';
-import { Mode } from '../types';
+import modes from '../constants/modes.ts';
+import { Mode } from '../types/mod.ts';
 
 export default function getMode(data: string): Mode {
   switch (true) {

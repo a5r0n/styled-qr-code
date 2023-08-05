@@ -1,7 +1,7 @@
-import type { CanvasRenderingContext2D, Image } from 'skia-canvas';
+import type { CanvasRenderingContext2D, Image } from 'https://deno.land/x/skia_canvas@0.5.4/mod.ts';
+import { Buffer } from 'https://deno.land/std@0.197.0/io/buffer.ts';
 
 export interface UnknownObject {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 

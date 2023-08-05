@@ -1,4 +1,4 @@
-import { TypeNumber } from '../types';
+import { TypeNumber } from '../types/mod.ts';
 
 interface TypesMap {
   [key: number]: TypeNumber;

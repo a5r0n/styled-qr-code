@@ -1,6 +1,6 @@
-import cornerDotTypes from '../../constants/cornerDotTypes.js';
-import { CornerDotType, RotateFigureArgsCanvas, BasicFigureDrawArgsCanvas, DrawArgsCanvas } from '../../types';
-import type { CanvasRenderingContext2D } from 'skia-canvas';
+import cornerDotTypes from '../../constants/cornerDotTypes.ts';
+import { CornerDotType, RotateFigureArgsCanvas, BasicFigureDrawArgsCanvas, DrawArgsCanvas } from '../../types/mod.ts';
+import type { CanvasRenderingContext2D } from 'https://deno.land/x/skia_canvas@0.5.4/mod.ts';
 
 export default class QRCornerDot {
   _context: CanvasRenderingContext2D;
@@ -46,7 +46,7 @@ export default class QRCornerDot {
     this._rotateFigure({
       ...args,
       draw: () => {
-        context.arc(0, 0, size / 2, 0, Math.PI * 2);
+        context.arc(0, 0, size / 2, 0, Math.PI * 2, false);
       }
     });
   }

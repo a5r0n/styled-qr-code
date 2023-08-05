@@ -1,4 +1,4 @@
-import { DotTypes } from '../types';
+import { DotTypes } from '../types/mod.ts';
 
 export default {
   dots: 'dots',

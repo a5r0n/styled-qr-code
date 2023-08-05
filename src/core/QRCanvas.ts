@@ -1,17 +1,24 @@
-import calculateImageSize from '../tools/calculateImageSize.js';
-import errorCorrectionPercents from '../constants/errorCorrectionPercents.js';
-import QRDot from '../figures/dot/QRDot.js';
-import QRCornerSquare from '../figures/cornerSquare/QRCornerSquare.js';
-import QRCornerDot from '../figures/cornerDot/QRCornerDot.js';
-import defaultOptions, { RequiredOptions } from './QROptions.js';
-import gradientTypes from '../constants/gradientTypes.js';
-import { QRCode, Gradient, FilterFunction, Options } from '../types';
-import getMode from '../tools/getMode.js';
-import { Canvas, CanvasRenderingContext2D, ExportFormat, RenderOptions, loadImage, Image } from 'skia-canvas';
-import qrcode from 'qrcode-generator';
-import { promises as fs } from 'fs';
-import mergeDeep from '../tools/merge.js';
-import sanitizeOptions from '../tools/sanitizeOptions.js';
+import calculateImageSize from '../tools/calculateImageSize.ts';
+import errorCorrectionPercents from '../constants/errorCorrectionPercents.ts';
+import QRDot from '../figures/dot/QRDot.ts';
+import QRCornerSquare from '../figures/cornerSquare/QRCornerSquare.ts';
+import QRCornerDot from '../figures/cornerDot/QRCornerDot.ts';
+import defaultOptions, { RequiredOptions } from './QROptions.ts';
+import gradientTypes from '../constants/gradientTypes.ts';
+import { QRCode, Gradient, FilterFunction, Options } from '../types/mod.ts';
+import getMode from '../tools/getMode.ts';
+import {
+  Canvas,
+  CanvasRenderingContext2D,
+  Image,
+  ImageFormat,
+  Style,
+  CanvasGradient
+} from 'https://deno.land/x/skia_canvas@0.5.4/mod.ts';
+import qrcode from 'https://esm.sh/qrcode-generator@1.4.4';
+import mergeDeep from '../tools/merge.ts';
+import sanitizeOptions from '../tools/sanitizeOptions.ts';
+import { Buffer } from 'https://deno.land/std@0.197.0/io/buffer.ts';
 
 const squareMask = [
   [1, 1, 1, 1, 1, 1, 1],
@@ -57,7 +64,7 @@ export default class QRCanvas {
     this._qr = qrcode(
       this._options.qrOptions.typeNumber,
       this._options.qrOptions.errorCorrectionLevel
-    ) as any as QRCode;
+    ) as unknown as QRCode;
 
     this._qr.addData(this._options.data, this._options.qrOptions.mode || getMode(this._options.data));
     this.created = this.drawQR();
@@ -96,8 +103,11 @@ export default class QRCanvas {
     };
 
     if (this._options.image !== undefined) {
-      if (typeof this._options.image === 'string' || Buffer.isBuffer(this._options.image)) {
-        this._image = await loadImage(this._options.image);
+      if (typeof this._options.image === 'string') {
+        this._image = await Image.load(this._options.image);
+        // Check if image is a buffer
+      } else if (this._options.image instanceof Buffer) {
+        this._image = new Image(this._options.image.bytes());
       } else {
         this._image = this._options.image;
       }
@@ -166,7 +176,7 @@ export default class QRCanvas {
           gradient.addColorStop(offset, color);
         });
 
-        canvasContext.fillStyle = gradient;
+        canvasContext.fillStyle = gradient as Style;
       } else if (options.backgroundOptions.color) {
         canvasContext.fillStyle = options.backgroundOptions.color;
       }
@@ -235,7 +245,7 @@ export default class QRCanvas {
         gradient.addColorStop(offset, color);
       });
 
-      canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
+      canvasContext.fillStyle = canvasContext.strokeStyle = gradient as Style;
     } else if (options.dotsOptions.color) {
       canvasContext.fillStyle = canvasContext.strokeStyle = options.dotsOptions.color;
     }
@@ -317,7 +327,7 @@ export default class QRCanvas {
           gradient.addColorStop(offset, color);
         });
 
-        canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
+        canvasContext.fillStyle = canvasContext.strokeStyle = gradient as Style;
       } else if (options.cornersSquareOptions?.color) {
         canvasContext.fillStyle = canvasContext.strokeStyle = options.cornersSquareOptions.color;
       }
@@ -365,7 +375,7 @@ export default class QRCanvas {
           gradient.addColorStop(offset, color);
         });
 
-        canvasContext.fillStyle = canvasContext.strokeStyle = gradient;
+        canvasContext.fillStyle = canvasContext.strokeStyle = gradient as Style;
       } else if (options.cornersDotOptions?.color) {
         canvasContext.fillStyle = canvasContext.strokeStyle = options.cornersDotOptions.color;
       }
@@ -470,9 +480,9 @@ export default class QRCanvas {
    * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    */
-  async toBuffer(format: ExportFormat = 'png', options?: RenderOptions): Promise<Buffer> {
+  async toBuffer(format: ImageFormat = 'png', quality?: number): Promise<Uint8Array> {
     await this.created;
-    return this._canvas.toBuffer(format, options);
+    return this._canvas.encode(format, quality);
   }
 
   /**
@@ -481,9 +491,9 @@ export default class QRCanvas {
    * @param format Supported types: "png" | "jpg" | "jpeg" | "pdf" | "svg"
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    */
-  async toDataUrl(format: ExportFormat = 'png', options?: RenderOptions): Promise<string> {
+  async toDataUrl(format: ImageFormat = 'png', quality?: number): Promise<string> {
     await this.created;
-    return this._canvas.toDataURL(format, options);
+    return this._canvas.toDataURL(format, quality);
   }
 
   /**
@@ -494,8 +504,8 @@ export default class QRCanvas {
    * @param options export options see https://github.com/samizdatco/skia-canvas#tobufferformat-page-matte-density-quality-outline
    * @returns a promise that resolves once the file was written to disk
    */
-  async toFile(filePath: string, format: ExportFormat = 'png', options?: RenderOptions): Promise<void> {
+  async toFile(filePath: string, format: ImageFormat = 'png', quality?: number): Promise<void> {
     await this.created;
-    return fs.writeFile(filePath, await this._canvas.toBuffer(format, options));
+    return this._canvas.save(filePath, format, quality);
   }
 }

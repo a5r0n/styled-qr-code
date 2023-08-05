@@ -1,13 +1,13 @@
-import QRCodeCanvas from './core/QRCanvas.js';
-import dotTypes from './constants/dotTypes.js';
-import cornerDotTypes from './constants/cornerDotTypes.js';
-import cornerSquareTypes from './constants/cornerSquareTypes.js';
-import errorCorrectionLevels from './constants/errorCorrectionLevels.js';
-import errorCorrectionPercents from './constants/errorCorrectionPercents.js';
-import modes from './constants/modes.js';
-import qrTypes from './constants/qrTypes.js';
+import QRCodeCanvas from './core/QRCanvas.ts';
+import dotTypes from './constants/dotTypes.ts';
+import cornerDotTypes from './constants/cornerDotTypes.ts';
+import cornerSquareTypes from './constants/cornerSquareTypes.ts';
+import errorCorrectionLevels from './constants/errorCorrectionLevels.ts';
+import errorCorrectionPercents from './constants/errorCorrectionPercents.ts';
+import modes from './constants/modes.ts';
+import qrTypes from './constants/qrTypes.ts';
 
-export * from './types';
+// export * from './types';
 
 export {
   QRCodeCanvas,
