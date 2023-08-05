@@ -3,8 +3,11 @@ import { main } from './src/cli/cli.ts';
 
 // Execute main() if running as a script
 // Learn more at https://deno.land/manual/examples/module_metadata#concepts
+// check if is run in deno deploy
 if (import.meta.main) {
-  if (Deno.args.length === 0) {
+  if (Deno.env.get('DENO_DEPLOYMENT_ID')) {
+    await Serve();
+  } else if (Deno.args.length === 0) {
     console.log('Choose a subcommand: serve, generate');
   } else if (Deno.args[0] === 'serve') {
     await Serve();
