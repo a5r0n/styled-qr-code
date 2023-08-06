@@ -3,6 +3,7 @@ import QRCanvas from '../core/QRCanvas.ts';
 import { Options } from '../types/mod.ts';
 import defaultOptions from '../core/QROptions.ts';
 import { DotType } from '../types/mod.ts';
+import createCanvas from './denocanvas.ts';
 
 export async function main(args: string[]) {
   const {
@@ -64,12 +65,14 @@ export async function main(args: string[]) {
         margin: image_margin || defaultOptions.imageOptions.margin
       },
       margin: margin || defaultOptions.margin,
-      width: w || width || defaultOptions.width,
-      height: h || height || defaultOptions.height
+      width: w || width || 300,
+      height: h || height || 300
     } as Options;
-    const qr = new QRCanvas(opts);
 
-    const QRCode = await qr.toDataUrl();
-    console.log(QRCode);
+    const canvas = createCanvas(opts.width || opts.height, opts.height || opts.width);
+    const qr = new QRCanvas(canvas, opts);
+
+    await qr.created;
+    console.log(canvas.toDataURL('png'));
   }
 }

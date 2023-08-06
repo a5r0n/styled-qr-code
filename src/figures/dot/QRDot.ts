@@ -7,7 +7,7 @@ import {
   DrawArgsCanvas
 } from '../../types/mod.ts';
 
-import type { CanvasRenderingContext2D } from 'https://deno.land/x/skia_canvas@0.5.4/mod.ts';
+import type { CanvasRenderingContext2D } from '../../core/types.ts';
 
 export default class QRDot {
   _context: CanvasRenderingContext2D;

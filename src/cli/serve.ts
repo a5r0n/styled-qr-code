@@ -3,6 +3,8 @@ import loggerMiddleware from 'https://deno.land/x/oak_logger@1.0.0/mod.ts';
 import Logger from 'https://deno.land/x/logger@v1.1.1/logger.ts';
 import { Options as QRCanvasOptions } from '../types/mod.ts';
 import { QRCodeCanvas } from '../index.ts';
+import createCanvas from './denocanvas.ts';
+
 const logger = new Logger();
 
 //Register your Oak App
@@ -33,9 +35,12 @@ const GetQROptions = (url: URL) => {
 };
 
 router.get('/url/:format', (ctx) => {
-  const qr = new QRCodeCanvas(GetQROptions(ctx.request.url));
+  const opts = GetQROptions(ctx.request.url);
+  const canvas = createCanvas(opts.width || 300, opts.height || 300);
+  const qr = new QRCodeCanvas(canvas, opts);
+
   const format = ctx.params.format;
-  if (format !== 'png' && format !== 'jpeg' && format !== 'webp') {
+  if (format !== 'png' && format !== 'jpeg') {
     ctx.response.body = 'Invalid format';
     return;
   }
@@ -46,9 +51,12 @@ router.get('/url/:format', (ctx) => {
 });
 
 router.get('/image/:format', (ctx) => {
-  const qr = new QRCodeCanvas(GetQROptions(ctx.request.url));
+  const opts = GetQROptions(ctx.request.url);
+  const canvas = createCanvas(opts.width || 300, opts.height || 300);
+  const qr = new QRCodeCanvas(canvas, opts);
+
   const format = ctx.params.format;
-  if (format !== 'png' && format !== 'jpeg' && format !== 'webp') {
+  if (format !== 'png' && format !== 'jpeg') {
     ctx.response.body = 'Invalid format';
     ctx.response.status = 400;
     return;

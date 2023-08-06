@@ -7,15 +7,8 @@ import defaultOptions, { RequiredOptions } from './QROptions.ts';
 import gradientTypes from '../constants/gradientTypes.ts';
 import { QRCode, Gradient, FilterFunction, Options } from '../types/mod.ts';
 import getMode from '../tools/getMode.ts';
-import {
-  Canvas,
-  CanvasRenderingContext2D,
-  Image,
-  ImageFormat,
-  Style,
-  CanvasGradient
-} from 'https://deno.land/x/skia_canvas@0.5.4/mod.ts';
-import qrcode from 'https://esm.sh/qrcode-generator@1.4.4';
+import { Canvas, CanvasGradient, CanvasRenderingContext2D, Image, ImageFormat, Style } from './types.ts';
+import qrcode from 'npm:qrcode-generator@1.4.4';
 import mergeDeep from '../tools/merge.ts';
 import sanitizeOptions from '../tools/sanitizeOptions.ts';
 import { Buffer } from 'https://deno.land/std@0.197.0/io/buffer.ts';
@@ -51,12 +44,12 @@ export default class QRCanvas {
   public created: Promise<void>;
 
   //TODO don't pass all options to this class
-  constructor(options: Options) {
+  constructor(canvas: Canvas, options: Options) {
     const mergedOptions = sanitizeOptions(mergeDeep(defaultOptions, options) as RequiredOptions);
 
     this._width = mergedOptions.width;
     this._height = mergedOptions.height;
-    this._canvas = new Canvas(this._width, this._height);
+    this._canvas = canvas;
 
     this._options = mergedOptions;
 
@@ -71,7 +64,7 @@ export default class QRCanvas {
   }
 
   get context(): CanvasRenderingContext2D {
-    return this._canvas.getContext('2d');
+    return this._canvas.getContext();
   }
 
   get width(): number {
@@ -104,10 +97,9 @@ export default class QRCanvas {
 
     if (this._options.image !== undefined) {
       if (typeof this._options.image === 'string') {
-        this._image = await Image.load(this._options.image);
-        // Check if image is a buffer
+        this._image = await this._canvas.loadImage(this._options.image);
       } else if (this._options.image instanceof Buffer) {
-        this._image = new Image(this._options.image.bytes());
+        this._image = await this._canvas.loadImage(this._options.image.bytes());
       } else {
         this._image = this._options.image;
       }
@@ -117,8 +109,8 @@ export default class QRCanvas {
       const maxHiddenDots = Math.floor(coverLevel * count * count);
 
       drawImageSize = calculateImageSize({
-        originalWidth: this._image.width,
-        originalHeight: this._image.height,
+        originalWidth: this._image.width(),
+        originalHeight: this._image.height(),
         maxHiddenDots,
         maxHiddenAxisDots: count - 14,
         dotSize

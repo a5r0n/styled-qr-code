@@ -1,6 +1,6 @@
 import cornerDotTypes from '../../constants/cornerDotTypes.ts';
 import { CornerDotType, RotateFigureArgsCanvas, BasicFigureDrawArgsCanvas, DrawArgsCanvas } from '../../types/mod.ts';
-import type { CanvasRenderingContext2D } from 'https://deno.land/x/skia_canvas@0.5.4/mod.ts';
+import type { CanvasRenderingContext2D } from '../../core/types.ts';
 
 export default class QRCornerDot {
   _context: CanvasRenderingContext2D;
