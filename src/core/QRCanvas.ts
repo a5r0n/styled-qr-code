@@ -8,7 +8,7 @@ import gradientTypes from '../constants/gradientTypes.ts';
 import { QRCode, Gradient, FilterFunction, Options } from '../types/mod.ts';
 import getMode from '../tools/getMode.ts';
 import { Canvas, CanvasGradient, CanvasRenderingContext2D, Image, ImageFormat, Style } from './types.ts';
-import qrcode from 'https://esm.sh/qrcode-generator@1.4.4';
+import { qrcode } from 'https://deno.land/x/qrcode@v2.0.0/qrcode.js';
 import mergeDeep from '../tools/merge.ts';
 import sanitizeOptions from '../tools/sanitizeOptions.ts';
 import { Buffer } from 'https://deno.land/std@0.197.0/io/buffer.ts';

@@ -69,6 +69,14 @@ export async function main(args: string[]) {
       height: h || height || 300
     } as Options;
 
+    if (opts.width === undefined) {
+      opts.width = opts.height || 300;
+    }
+
+    if (opts.height === undefined) {
+      opts.height = opts.width || 300;
+    }
+
     const canvas = createCanvas(opts.width || opts.height, opts.height || opts.width);
     const qr = new QRCanvas(canvas, opts);
 
