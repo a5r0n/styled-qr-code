@@ -95,7 +95,7 @@ export default class QRCanvas {
       height: 0
     };
 
-    if (this._options.image !== undefined) {
+    if (this._options.image !== undefined && this._options.image != null) {
       if (typeof this._options.image === 'string') {
         this._image = await this._canvas.loadImage(this._options.image);
       } else if (this._options.image instanceof Buffer) {
@@ -143,7 +143,7 @@ export default class QRCanvas {
     });
     this.drawCorners();
 
-    if (this._options.image !== undefined) {
+    if (this._options.image !== undefined && this._options.image != null) {
       this.drawImage({ width: drawImageSize.width, height: drawImageSize.height, count, dotSize });
     }
   }
